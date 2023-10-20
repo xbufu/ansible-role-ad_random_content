@@ -1,0 +1,26 @@
+---
+- name: Upload resource files
+  ansible.builtin.include_tasks: upload_resources.yml
+
+- name: Create OU structure
+  ansible.builtin.include_tasks: create_ou_structure.yml
+
+- name: Create users
+  ansible.builtin.include_tasks: create_users.yml
+
+- name: Create groups
+  ansible.builtin.include_tasks: create_groups.yml
+
+- name: Create computers
+  ansible.builtin.include_tasks: create_computers.yml
+
+- name: Create ACLs
+  ansible.builtin.include_tasks: create_acls.yml
+
+- name: Create random nested objects
+  ansible.builtin.include_tasks: create_nested_objects.yml
+
+- name: Clean up resource files
+  ansible.windows.win_file:
+    path: "{{ content_resource_folder }}"
+    state: absent

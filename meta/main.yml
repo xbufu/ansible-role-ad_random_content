@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  role_name: ad_random_content
+  author: xbufu
+  description: AD random content role. Basically a BadBlood by @davidprowe wrapper.
+  company: Bufu-Security
+  license: license (BSD, MIT)
+  min_ansible_version: "2.1"
+  platforms:
+    - name: Windows
+      versions: all
+
+  galaxy_tags:
+    - windows
+    - ad
+    - gpo
+    - acl
+    - vulnerable_domain
+    - badblood

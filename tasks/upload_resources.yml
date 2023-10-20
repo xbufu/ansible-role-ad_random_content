@@ -1,0 +1,16 @@
+---
+- name: Create resource folder
+  ansible.windows.win_tempfile:
+    state: directory
+    suffix: ad_content_resources
+  register: tmp_rsrc_dir
+
+- name: Update variable
+  ansible.builtin.set_fact:
+    content_resource_folder: "{{ tmp_rsrc_dir.path }}"
+
+- name: Transfer files
+  ansible.windows.win_copy:
+    src: "{{ item }}"
+    dest: "{{ content_resource_folder }}"
+  with_fileglob: files/*
