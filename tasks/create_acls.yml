@@ -118,7 +118,7 @@
           #ADD ALL PARAMETERS TO $PERMISSIONS
           $Permissions += $row
           $permissions
-          $permINT = 1..100 | get-random 
+          $permINT = 1..100 | get-random
           if ($permint -gt 25) {
               #if gt this number, assign random permissions
               $howmanypermissions = 1..60 | get-random
@@ -157,7 +157,7 @@
 
       #Get a reference to the RootDSE of the current domain
       $schemaPath = (Get-ADRootDSE)
-      #$schemaobjects = Get-ADObject -filter * -SearchBase $schemaPath.defaultNamingContext -Properties * 
+      #$schemaobjects = Get-ADObject -filter * -SearchBase $schemaPath.defaultNamingContext -Properties *
       #Get a reference to the current domain
       $domain = Get-ADDomain
       #============================
@@ -264,12 +264,12 @@
           $permissions = Create-PermissionSet
           $adgroup = get-adcomputer $obj
           foreach ($permission in $permissions) {
-              if ($permissions.count -gt 0) { 
+              if ($permissions.count -gt 0) {
                   if ($permission.APPLY -eq 'TRUE') {
                       #apply directly to OU first choice, apply to computer,group,user second choice
                       if ($permission.functionset -eq 'Full Control Permissions') {
 
-                          #FullControl 
+                          #FullControl
                           $OUorRootRando = 1..100 | get-random
                           if ($OUorRootRando -le 5) {
                               #lets do root here
