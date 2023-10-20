@@ -15,7 +15,7 @@
       Function Create-PermissionSet {
           $Permissions = @()
           $row = @()
-          
+
           #===================================================================
           #Full Control PERMISSIONS
           $FunctionSet = "Full Control Permissions"
@@ -23,7 +23,7 @@
           $row += new-object PSObject -Property @{FunctionSet = $FunctionSet; FunctionName = 'FullControlUsers'; APPLY = 'FALSE' }
           $row += new-object PSObject -Property @{FunctionSet = $FunctionSet; FunctionName = 'FullControlGroups'; APPLY = 'FALSE' }
           $row += new-object PSObject -Property @{FunctionSet = $FunctionSet; FunctionName = 'FullControlComputers'; APPLY = 'FALSE' }
-          
+
           #===================================================================
           #USER PERMISSIONS
           $FunctionSet = "User Control Permissions"
@@ -39,8 +39,8 @@
           $row += new-object PSObject -Property @{FunctionSet = $FunctionSet; FunctionName = 'ModifyUserProperties'; APPLY = 'FALSE' }
           $row += new-object PSObject -Property @{FunctionSet = $FunctionSet; FunctionName = 'DenyModifyLogonScript'; APPLY = 'FALSE' }
           $row += new-object PSObject -Property @{FunctionSet = $FunctionSet; FunctionName = 'DenySetUserSPN'; APPLY = 'FALSE' }
-          
-          #END USER PERMISSIONS 
+
+          #END USER PERMISSIONS
           #===================================================================
           #COMPUTER PERMISSIONS
           $FunctionSet = "Computer Control Permissions"
@@ -67,7 +67,7 @@
           $row += new-object PSObject -Property @{FunctionSet = $FunctionSet; FunctionName = 'ModifyGroupProperties'; APPLY = 'FALSE' }
           $row += new-object PSObject -Property @{FunctionSet = $FunctionSet; FunctionName = 'ModifyGroupMembership'; APPLY = 'FALSE' }
           $row += new-object PSObject -Property @{FunctionSet = $FunctionSet; FunctionName = 'ModifyGroupGroupMembership'; APPLY = 'FALSE' }
-          
+
           #END GROUP PERMISSIONS
           #===================================================================
           #OU PERMISSIONS
@@ -113,7 +113,7 @@
           $row += new-object PSObject -Property @{FunctionSet = $FunctionSet; FunctionName = 'CreateSiteLinkObjects'; APPLY = 'FALSE' }
           $row += new-object PSObject -Property @{FunctionSet = $FunctionSet; FunctionName = 'DeleteSiteLinkObjects'; APPLY = 'FALSE' }
           $row += new-object PSObject -Property @{FunctionSet = $FunctionSet; FunctionName = 'ModifySiteLinkProperties'; APPLY = 'FALSE' }
-          
+
           #===========================================
           #ADD ALL PARAMETERS TO $PERMISSIONS
           $Permissions += $row
@@ -130,9 +130,7 @@
               }while ($P -le $howmanypermissions)
           }
           $permissions
-
       }
-
 
       #=================
       #Rando permissions now set to the $permissions variable. Time to do some random admin damage
@@ -156,7 +154,7 @@
       ## Create guidmap for acl functions
       cd ad:
       #=============================================
-            
+
       #Get a reference to the RootDSE of the current domain
       $schemaPath = (Get-ADRootDSE)
       #$schemaobjects = Get-ADObject -filter * -SearchBase $schemaPath.defaultNamingContext -Properties * 
@@ -166,13 +164,13 @@
       #Create a hashtable to store the GUID value of each schema class and attribute
       $guidmap = @{}
       Get-ADObject -SearchBase ($schemaPath.SchemaNamingContext) -LDAPFilter  `
-          "(schemaidguid=*)" -Properties lDAPDisplayName, schemaIDGUID | 
+          "(schemaidguid=*)" -Properties lDAPDisplayName, schemaIDGUID |
       % { $guidmap[$_.lDAPDisplayName] = [System.GUID]$_.schemaIDGUID }
 
       #Create a hashtable to store the GUID value of each extended right in the forest
       $extendedrightsmap = @{}
       Get-ADObject -SearchBase ($schemaPath.ConfigurationNamingContext) -LDAPFilter `
-          "(&(objectclass=controlAccessRight)(rightsguid=*))" -Properties displayName, rightsGuid | 
+          "(&(objectclass=controlAccessRight)(rightsguid=*))" -Properties displayName, rightsGuid |
       % { $extendedrightsmap[$_.displayName] = [System.GUID]$_.rightsGuid }
 
       <#Pick X number of random users#>
@@ -193,13 +191,13 @@
                   if ($permission.APPLY -eq 'TRUE') {
                       #apply directly to OU first choice, apply to computer,group,user second choice
                       if ($permission.functionset -eq 'Full Control Permissions') {
-                                    
-                          #FullControl 
+
+                          #FullControl
                           $OUorRootRando = 1..100 | get-random
                           if ($OUorRootRando -le 3) {
                               #lets do root here
                               iex ($permission.FunctionName + " -objgroup " + '$adgroup' + " -objou " + '$dn' + " -inheritanceType `'Descendents`'")
-                      
+
                           }
                           else {
                               $OUPicked = $allOUs | Get-random
@@ -228,17 +226,17 @@
           $permissions = Create-PermissionSet
           $adgroup = get-adgroup $obj
           foreach ($permission in $permissions) {
-              if ($permissions.count -gt 0) { 
+              if ($permissions.count -gt 0) {
                   if ($permission.APPLY -eq 'TRUE') {
                       #apply directly to OU first choice, apply to computer,group,user second choice
                       if ($permission.functionset -eq 'Full Control Permissions') {
-                        
-                          #FullControl 
+
+                          #FullControl
                           $OUorRootRando = 1..100 | get-random
                           if ($OUorRootRando -le 5) {
                               #lets do root here
                               iex ($permission.FunctionName + " -objgroup " + '$adgroup' + " -objou " + '$dn' + " -inheritanceType `'Descendents`'")
-          
+
                           }
                           else {
                               $OUPicked = $allOUs | Get-random
@@ -270,13 +268,13 @@
                   if ($permission.APPLY -eq 'TRUE') {
                       #apply directly to OU first choice, apply to computer,group,user second choice
                       if ($permission.functionset -eq 'Full Control Permissions') {
-                        
+
                           #FullControl 
                           $OUorRootRando = 1..100 | get-random
                           if ($OUorRootRando -le 5) {
                               #lets do root here
                               iex ($permission.FunctionName + " -objgroup " + '$adgroup' + " -objou " + '$dn' + " -inheritanceType `'Descendents`'")
-          
+
                           }
                           else {
                               $OUPicked = $allOUs | Get-random
